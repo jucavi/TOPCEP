@@ -1,6 +1,4 @@
-from nis import cat
-from textwrap import wrap
-from flask import Blueprint, redirect, request, render_template, flash, session, url_for
+from flask import Blueprint, redirect, request, render_template, flash, session, url_for, current_app, g
 from models import User
 from uuid import uuid4
 import secrets
@@ -57,10 +55,10 @@ def login():
 
     return render_template('login.html', submit='login', title='Log in')
 
+
 @auth_bp.route('/logout')
 def logout():
-    _id = session.get('id')
-    user = User.query.get(_id)
+    user = g.user
     if user:
         user.reset_token()
         db.session.add(user)
@@ -71,18 +69,28 @@ def logout():
     return redirect(url_for('dashboard.index'))
 
 
+@current_app.before_request
+def load_user():
+    g.user = current_user()
+
+
 def login_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        _id = session.get('id')
-        if _id:
-            user = User.query.get(_id)
-            try:
-                if user.is_authenticated():
-                    return func(*args, **kwargs)
-            except Exception:
-                pass
-            
+        user = current_user()
+
+        if user.is_authenticated():
+            return func(*args, **kwargs)
+
         flash('You must be log in to access this page', category='warning')
         return redirect(url_for('auth.login'))
     return wrapper
+
+
+def current_user():
+    if 'id' in session:
+        _id = session.get('id')
+        user = User.query.get(_id)
+        if user and user.is_authenticated():
+            return user
+    return User()

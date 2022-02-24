@@ -19,11 +19,19 @@ class User(db.Model):
 
 
     def is_authenticated(self):
-        return self.token == session.get('token')
+        session_token = session.get('token')
+        return session_token and (self.token == session_token)
 
     def reset_token(self):
         self.token = None
 
+    @property
+    def username(self):
+        try:
+            return self.email.split('@')[0].capitalize()
+        except Exception:
+            return 'Anonymous'
+
 
     def __repr__(self):
-        return f'< Owner >: {self.email}'
+        return f'< User >: {self.email}'

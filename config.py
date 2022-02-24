@@ -11,6 +11,7 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SESSION_COOKIE_SECURE = True
 
 
 class ProdConfig(Config):
@@ -21,12 +22,11 @@ class ProdConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(basedir, 'production.db')
 
 
-
 class DevConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
     TESTING = True
-    
+
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(basedir, 'development.db')
 
 
