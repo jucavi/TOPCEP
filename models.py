@@ -1,3 +1,4 @@
+from sqlalchemy import ForeignKey
 from main import db
 from flask import session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -35,3 +36,16 @@ class User(db.Model):
 
     def __repr__(self):
         return f'< User >: {self.email}'
+
+
+class Question(db.Model):
+    id = db.Column(db.String(32), primary_key=True)
+    question = db.Column(db.Text(), nullable=False)
+    answer = db.Column(db.String(32), default=None)
+
+
+class Choice(db.Model):
+    id = db.Column(db.String(32), primary_key=True)
+    choice = db.Column(db.String(), nullable=False)
+    question_id = db.Column(db.String(32), db.ForeignKey('question.id'), nullable=False)
+    question = db.relationship('Question', backref=db.backref('choices', lazy=True))

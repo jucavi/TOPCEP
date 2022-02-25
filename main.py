@@ -21,4 +21,8 @@ def create_app(env='develop'):
         app.register_blueprint(auth_bp)
         app.register_blueprint(dash_bp)
 
+    @app.shell_context_processor
+    def make_shell_context():
+        return {'db': db}
+
     return app
