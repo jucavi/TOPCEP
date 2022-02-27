@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+{% include '_navbar.html' %}
+{% endblock %}
+
+
+{% block content %}
+  <h1 class="text-center diasplay-1 mt-5">Quiz</h1>
+
+  <form action="" method="Post" class="container" id="questions">
+    {% for question in questions %}
+      <div class="container">
+        <div class="card mb-3 p-1">
+          <div class="card-body">
+            <div class="card-header mb-3">
+              {{ question }}
+            </div>
+            <div class="form-check p-auto" id="{{ question.id }}" required>
+              {% for choice in question.choices %}
+                  <input type="hidden">
+                  <input class="form-check-input" type="radio" name="{{ question.id }}" value="{{ choice.id }}">
+                  <label class="form-check-label" for="choice{{ question.id }}">{{ choice }}</label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    <button type="submit">Send</button>
+  </form>
+{% endblock %}
+
+{% block page_js %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}

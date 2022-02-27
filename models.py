@@ -1,4 +1,3 @@
-from sqlalchemy import ForeignKey
 from main import db
 from flask import session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -43,9 +42,16 @@ class Question(db.Model):
     question = db.Column(db.Text(), nullable=False)
     answer = db.Column(db.String(32), default=None)
 
+    def __repr__(self):
+        return f'{self.question}'
+
 
 class Choice(db.Model):
     id = db.Column(db.String(32), primary_key=True)
     choice = db.Column(db.String(), nullable=False)
     question_id = db.Column(db.String(32), db.ForeignKey('question.id'), nullable=False)
-    question = db.relationship('Question', backref=db.backref('choices', lazy=True))
+
+    question = db.relationship('Question', backref=db.backref('choices', lazy=True, cascade=('all', 'delete-orphan')))
+
+    def __repr__(self):
+        return f'{self.choice}'
