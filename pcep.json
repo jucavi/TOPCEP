@@ -1,0 +1,96 @@
+{
+    "BLOCK_EXAMPLE": [
+    {
+        "question": "some q",
+        "options": [
+            "op1","op2 (CORRECTA)","op3"
+        ],
+        "answer": 0
+    },
+    {
+        "question": "What is an abstract class?",
+        "options": [
+            "An abstract class is the name for any class from which you can instantiate an object.",
+            "Abstract classes must be redefined any time an object is instantiated from them.",
+            "Abstract classes must inherit from concrete classes.",
+            "An abstract class exists only so that other 'concrete' classes can inherit from the abstract class."
+        ],
+        "answer": 3
+    }
+    ],
+    "1_Computer_Programming_and_Python_Fundamentals": [],
+    "2_Control_Flow_Conditional_Blocks_and_Loops": [
+        {
+            "question": "What is the purpose of an if/else statement?",
+            "options": [
+                "It tells the computer which chunk of code to run if the instructions you coded are incorrect.",
+                "It runs one chunk of code if all the imports were successful, and another chunk of code if the imports were not successful.",
+                "It executes one chunk of code if a condition is true, but a different chunk of code if the condition is false.",
+                "It tells the computer which chunk of code to run if the is enough memory to handle it, and which chunk of code to run if there is not enough memory to handle it."
+            ],
+            "answer": 2
+        },
+        {
+            "question": "When does a for loop stop iterating?",
+            "options": [
+                "when it encounters an infinite loop",
+                "when it encounters an if/else statement that contains a break keyword",
+                "when it has assessed each item in the iterable it is working on or a break keyword is encountered",
+                "when the runtime for the loop exceeds O(n^2)"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "What is the proper way to write a list comprehension that represents all the keys in this dictionary?\nfruits = {'Apples': 5, 'Oranges': 3, 'Bananas': 4}",
+            "options": [
+                    "fruit_names = [x in fruits.keys() for x]",
+                    "fruit_names = [x for x in fruits.keys()]",
+                    "fruit_names = for x in fruits.keys() *",
+                    "fruit_names = x for x in fruits.keys()"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "When would you use a for loop?",
+            "options": [
+                    "Only in some situations, as loops are used only for certain type of programming.",
+                    "When you want to minimize the use of strings in your code.",
+                    "When you want to run code in one file for a function in another file.",
+                    "When you need to check every element in an iterable of known length."
+            ],
+            "answer": 3
+        },
+        {
+            "question": "When would you use a while loop?",
+            "options": [
+                "when you want some code to continue running as long as some condition is true",
+                "when you want to minimize the use of strings in your code",
+                "when you want to run code in one file while code in another file is also running",
+                "when you need to run two or more chunks of code at once within the same file"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "What is the correct term to call one execution of a loop",
+            "options": [
+                "Counter",
+                "Function",
+                "Run",
+                "Iteration"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "Which of the following pieces of code defines a list of all the numbers from 1 to 10?",
+            "options": [
+                "range (1,10)",
+                "range (1,11)",
+                "range (0,9)+1",
+                "range (1,2,3,4,5,6,7,8,9,10)"
+            ],
+            "answer": 1
+        }
+    ],
+    "3_Data_Collections_Tuples_Dictionaries_Lists_and_Strings": [],
+    "4_Functions_and_Exceptions": []
+}

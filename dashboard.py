@@ -18,21 +18,28 @@ def workspace():
 
 
 @dash_bp.route('/quiz', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def quiz():
-    questions = Question.query.all()
-
     if request.method == 'POST':
-        form = request.form
         result = {'results': []}
+        count = 0
+        total = 0
+        form = request.get_json() or request.form
         for question_id, choice_id in form.items():
             question = Question.query.get(question_id)
+            is_correct = question.answer == choice_id
             result['results'].append({
                     'question': question_id,
-                    'answer': choice_id,
-                    'correct_answer': question.answer,
-                    'correct': question.answer == choice_id
-                })
-            return result
+                    'choice': choice_id,
+                    'correct_choice': question.answer,
+                    'is_correct': is_correct
+            })
+            if is_correct:
+                count += 1
+            total += 1
 
+        avg = round(count / total * 100 , 2)
+        return result
+
+    questions = Question.query.all()
     return render_template('quiz.html', title='Quiz', user=g.user, questions=questions)

@@ -1,34 +1,42 @@
 {% extends 'base.html' %}
 
 {% block navbar %}
-{% include '_navbar.html' %}
+  {% include '_navbar.html' %}
 {% endblock %}
 
 
 {% block content %}
-  <h1 class="text-center diasplay-1 mt-5">Quiz</h1>
+  <h1 class="text-center diasplay-1 my-5">Quiz</h1>
 
   <form action="" method="Post" class="container" id="questions">
     {% for question in questions %}
       <div class="container">
         <div class="card mb-3 p-1">
           <div class="card-body">
-            <div class="card-header mb-3">
-              {{ question }}
+            <div class="card-header mb-2">
+              {% set lines = question.question.split('\n') %}
+              {% for line in lines %}
+                {{ line }}
+              {% endfor %}
             </div>
-            <div class="form-check p-auto" id="{{ question.id }}" required>
+            <div class="form-check p-auto" id="{{ question.id }}">
               {% for choice in question.choices %}
-                  <input type="hidden">
+                <div class="question"  id="{{ choice.id }}">
                   <input class="form-check-input" type="radio" name="{{ question.id }}" value="{{ choice.id }}">
-                  <label class="form-check-label" for="choice{{ question.id }}">{{ choice }}</label>
+                  <label class="form-check-label" for="{{ choice.id }}">{{ choice }}</label>
+                </div>
               {% endfor %}
             </div>
           </div>
         </div>
       </div>
     {% endfor %}
-    <button type="submit">Send</button>
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-primary mt-3" type="submit">Send</button>
+    </div>
   </form>
+
+  <div class="pb-5"></div>
 {% endblock %}
 
 {% block page_js %}
