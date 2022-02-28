@@ -23,7 +23,7 @@ def quiz():
     if request.method == 'POST':
         result = {'results': []}
         count = 0
-        total = 0
+        total = 8 #total quizzes
         form = request.get_json() or request.form
         for question_id, choice_id in form.items():
             question = Question.query.get(question_id)
@@ -36,9 +36,9 @@ def quiz():
             })
             if is_correct:
                 count += 1
-            total += 1
 
-        avg = round(count / total * 100 , 2)
+        result['avg'] = round(count / total * 100 , 2)
+        print(result['avg'])
         return result
 
     questions = Question.query.all()
