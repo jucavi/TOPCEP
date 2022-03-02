@@ -1,12 +1,16 @@
 const form = document.querySelector('#questions');
-const url = 'http://127.0.0.1:5000/quiz';
+const url = 'http://127.0.0.1:5000/score';
+const submit = document.querySelector('#quiz-submit');
 
 async function callEndPoint(url, data) {
   try {
+    // const cookie = document.cookie;
     const response = await axios({
-      method: 'post',
+      method: 'POST',
       url: url,
       data: data,
+      credentials: 'same-origin',
+      withCredentials: true
     });
     return response.data;
   } catch (e) {
@@ -77,5 +81,6 @@ form.addEventListener('submit', async (event) => {
 
   checkQuestionsAfterSubmit(quizCheck.results);
   showResult(quizCheck.avg);
+  submit.disabled = true;
   scrollTop();
 });

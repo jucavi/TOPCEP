@@ -28,10 +28,13 @@ with app.app_context():
                 question = Question(id=uuid4().hex, question=quiz['question'])
                 for i, choice in enumerate(quiz['options']):
                     c = Choice(id=uuid4().hex, choice=choice, question=question)
+
                     if quiz['answer'] == i:
                         question.answer = c.id
+
                     question.choices.append(c)
                 db.session.add(question)
+
             except Exception as e:
                 print(e)
 

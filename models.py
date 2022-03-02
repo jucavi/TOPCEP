@@ -18,8 +18,8 @@ class User(db.Model):
         return check_password_hash(self.password, password)
 
 
-    def is_authenticated(self):
-        session_token = session.get('token')
+    def is_authenticated(self, token=None):
+        session_token = session.get('token') or token
         return session_token and (self.token == session_token)
 
     def reset_token(self):
@@ -34,7 +34,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return f'< User >: {self.email}'
+        return f'<User: {self.email}>'
 
 
 class Question(db.Model):
