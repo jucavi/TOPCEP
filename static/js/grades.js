@@ -4,9 +4,7 @@ const grades = JSON.parse(stringGrades);
 // 100% DIV
 const sep = 1; // % bar separator
 const numBars = grades.length;
-console.log(numBars);
 const barWidth = (100 - sep * numBars) / numBars;
-console.log(barWidth);
 
 const chart = document.querySelector('#bar-plot');
 chart.style.position = 'relative';
@@ -18,7 +16,8 @@ for (let grade of grades) {
   const gradeText = document.createElement('div');
 
   gradeText.innerText = grade;
-  gradeText.classList.add('grade')
+  gradeText.style.fontSize = '80%';
+  gradeText.classList.add('grade');
 
   // style
   // gradeText.style.rotate = '-45deg'
@@ -32,7 +31,7 @@ for (let grade of grades) {
   divBarStyle.position = 'absolute';
   divBarStyle.left = `${sep + (sep + barWidth) * counter}%`;
   divBarStyle.bottom = 0;
-  divBarStyle.backgroundColor = '#706a53';
+  divBarStyle.backgroundColor = grade > 50 ? '#99d98c' : '#ca6702';
 
   if (grade === 0) {
     divBarStyle.bottom = '1.4em';

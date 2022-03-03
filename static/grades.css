@@ -14,3 +14,9 @@
     border-left: 2px solid rgb(31, 27, 27);
     border-bottom: 2px solid rgb(31, 27, 27);
 }
+
+@media screen and (max-width: 1200px) {
+  .grade {
+    display: none;
+  }
+}
