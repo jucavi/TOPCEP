@@ -21,12 +21,13 @@ def workspace():
     return render_template('workspace.html', title='workspace', user=current_user())
 
 
+QUIZ_QUESTIONS = 10
 @dash_bp.route('/quiz', methods=['GET', 'POST'])
 @login_required
 def quiz():
     questions = Question.query.all()
     shuffle(questions)
-    res = make_response(render_template('quiz.html', title='Quiz', user=current_user(), questions=questions))
+    res = make_response(render_template('quiz.html', title='Quiz', user=current_user(), questions=questions[:QUIZ_QUESTIONS]))
     res.set_cookie('id', current_user().id)
     return res
 
@@ -36,7 +37,6 @@ def score():
     result = {'results': [], 'avg': 0}
     count = 0
     form = request.get_json()
-    total = 16
     cookies = request.cookies
     _current_user = User.query.get(cookies['id'])
 
@@ -52,7 +52,7 @@ def score():
         if is_correct:
             count += 1
 
-    avg = round(count / total * 100 , 2)
+    avg = round(count / QUIZ_QUESTIONS * 100)
     result['avg'] = avg
 
     grades = append_grade(_current_user.grades, avg)
@@ -69,6 +69,12 @@ def grades():
     user = current_user()
     grades = user.grades or 'Make some Quizzes'
     return render_template('grades.html', title='Grades', grades=parse_grades(grades), user=user)
+
+
+@dash_bp.app_template_filter('shuffle')
+def make_shuffle(iter):
+    shuffle(iter)
+    return iter
 
 
 def append_grade(grades, avg):

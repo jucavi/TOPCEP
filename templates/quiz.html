@@ -20,7 +20,7 @@
               {% endfor %}
             </div>
             <div class="form-check p-auto" id="{{ question.id }}">
-              {% for choice in question.choices %}
+              {% for choice in question.choices|shuffle %}
                 <div class="question"  id="{{ choice.id }}">
                   <input class="form-check-input" type="radio" name="{{ question.id }}" value="{{ choice.id }}">
                   <label class="form-check-label" for="{{ choice.id }}">{{ choice }}</label>
