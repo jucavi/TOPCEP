@@ -1,13 +1,16 @@
 from main import db
 from flask import session
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
+    __tablename__='user'
+
     id = db.Column(db.String(32), primary_key=True)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False)
     token = db.Column(db.String(64), default=None)
-    grades = db.Column(db.String(50), default=None)
+    # grades = db.Column(db.String(50), default=None)
 
 
     def set_password(self, password):
@@ -32,12 +35,15 @@ class User(db.Model):
         except Exception:
             return 'Anonymous'
 
+    quizzes = db.relationship('Quiz', backref=db.backref('user'), lazy=True)
 
     def __repr__(self):
         return f'<User: {self.email}>'
 
 
 class Question(db.Model):
+    __tablename__ = 'question'
+
     id = db.Column(db.String(32), primary_key=True)
     question = db.Column(db.Text(), nullable=False)
     answer = db.Column(db.String(32), default=None)
@@ -47,6 +53,8 @@ class Question(db.Model):
 
 
 class Choice(db.Model):
+    __tablename__ = 'choice'
+
     id = db.Column(db.String(32), primary_key=True)
     choice = db.Column(db.String(), nullable=False)
     question_id = db.Column(db.String(32), db.ForeignKey('question.id'), nullable=False)
@@ -55,3 +63,29 @@ class Choice(db.Model):
 
     def __repr__(self):
         return f'{self.choice}'
+
+
+class Quiz(db.Model):
+    __tablename__='quiz'
+
+    id = db.Column(db.String(32), primary_key=True)
+    score = db.Column(db.Float(), nullable=False)
+    created_at = db.Column(db.DateTime(), default=datetime.now())
+    user_id = db.Column(db.String(32), db.ForeignKey('user.id'), nullable=False)
+
+    questions = db.relationship('Question', secondary='quizzesquestions', primaryjoin=('Question.id==QuizzesQuestions.question_id'))
+
+
+    def __repr__(self):
+        return f'{self.user} created at: {self.created_at}'
+
+
+class QuizzesQuestions(db.Model):
+    __tablename__= 'quizzesquestions'
+
+    id = db.Column(db.String(32), primary_key=True)
+    quizz_id = db.Column(db.String(32), db.ForeignKey('user.id'), nullable=False)
+    question_id = db.Column(db.String(32), db.ForeignKey('question.id'), nullable=False)
+    answer = db.Column(db.String(32))
+
+

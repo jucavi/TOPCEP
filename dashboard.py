@@ -1,14 +1,15 @@
-from ast import keyword
-from flask import Blueprint, render_template, make_response, request
-from auth import current_user, login_required, User
+from configparser import SectionProxy
+from flask import Blueprint, render_template, make_response, request, g
+from auth import current_user, login_required
 from main import db
 from random import shuffle
-from models import Question
-from flask_cors import CORS
+from uuid import uuid4
+from models import Question, Quiz, QuizzesQuestions, Choice
+# from flask_cors import CORS
 
 
 dash_bp = Blueprint('dashboard', __name__)
-CORS(dash_bp, supports_credentials=True)
+# CORS(dash_bp, supports_credentials=True)
 
 @dash_bp.route('/')
 def index():
@@ -28,7 +29,7 @@ def quiz():
     questions = Question.query.all()
     shuffle(questions)
     res = make_response(render_template('quiz.html', title='Quiz', user=current_user(), questions=questions[:QUIZ_QUESTIONS]))
-    res.set_cookie('id', current_user().id)
+    res.set_cookie('id', current_user().id, secure=True)
     return res
 
 
@@ -38,37 +39,43 @@ def score():
     count = 0
     form = request.get_json()
     cookies = request.cookies
-    _current_user = User.query.get(cookies['id'])
+    print(form)
+    print(cookies)
 
-    for question_id, choice_id in form.items():
-        question = Question.query.get(question_id)
-        is_correct = question.answer == choice_id
-        result['results'].append({
-                'question': question_id,
-                'choice': choice_id,
-                'correct_choice': question.answer,
-                'is_correct': is_correct
-        })
-        if is_correct:
-            count += 1
+    # quiz = Quiz(id=uuid4().hex, user_id=cookies['id'])
 
-    avg = round(count / QUIZ_QUESTIONS * 100)
-    result['avg'] = avg
+    # for question_id, choice_id in form.items():
+    #     question = Question.query.get(question_id)
+    #     is_correct = question.answer == choice_id
+    #     result['results'].append({
+    #             'question': question_id,
+    #             'choice': choice_id,
+    #             'correct_choice': question.answer,
+    #             'is_correct': is_correct
+    #     })
+    #     if is_correct:
+    #         count += 1
 
-    grades = append_grade(_current_user.grades, avg)
-    _current_user.grades = grades
-    db.session.add(_current_user)
-    db.session.commit()
+    #     qq = QuizzesQuestions(id=uuid4().hex, quizz_id=quiz.id, question_id=question_id, answer=choice_id)
+    #     db.session.add(qq)
+
+
+    # score = round(count / QUIZ_QUESTIONS * 100)
+    # result['score'] = score
+
+    # quiz.score = score
+    # db.session.add(quiz)
+    # db.session.commit()
 
     return result
 
 
 @dash_bp.route('/grades')
 @login_required
-def grades():
+def scores():
     user = current_user()
-    grades = user.grades or 'Make some Quizzes'
-    return render_template('grades.html', title='Grades', grades=parse_grades(grades), user=user)
+    scores = get_scores(user) or 'Make some Quizzes'
+    return render_template('scores.html', title='Grades', scores=scores, user=user)
 
 
 @dash_bp.app_template_filter('shuffle')
@@ -77,14 +84,9 @@ def make_shuffle(iter):
     return iter
 
 
-def append_grade(grades, avg):
-    grades = parse_grades(grades)
-    grades.append(avg)
-
-    return str(grades)
-
-
-def parse_grades(grades):
-    if grades:
-        return [float(grade) for grade in grades[1:-1].split(', ')]
-    return []
+def get_scores(user):
+    quizzes = user.quizzes
+    print(user, quizzes)
+    if not quizzes:
+        return None
+    return [quiz.score for quiz in quizzes]

@@ -1,29 +1,37 @@
 const form = document.querySelector('#questions');
+const questions = document.querySelectorAll('.question');
 const url = 'http://127.0.0.1:5000/score';
 const submit = document.querySelector('#quiz-submit');
 
 async function callEndPoint(url, data) {
-  try {
-    // const cookie = document.cookie;
-    const response = await axios({
-      method: 'POST',
-      url: url,
-      data: data,
-      credentials: 'same-origin',
-      withCredentials: true
-    });
-    return response.data;
-  } catch (e) {
-    console.log(`Unable to retrieve data from ${url}`);
-  }
+  // try {
+    // axios.defaults.withCredentials = true;
+  //   console.log(document.cookie)
+  //   const response = await axios({
+  //     method: 'POST',
+  //     url: url,
+  //     data: data,
+  //     // withCredentials: true
+  //     headers: { 'cookie': 'id=1234;'}
+  //   });
+  //   return response.data;
+  // } catch (e) {
+  //   console.log(e)
+  //   console.log(`Unable to retrieve data from ${url}`);
+  // }
+    fetch(url, {
+      method: 'POST'
+  })
 }
 
 const getData = () => {
-  const formData = new FormData(form);
   const data = {};
-
-  for (let pair of formData.entries()) {
-    data[pair[0].toString()] = pair[1];
+  for (let question of questions) {
+    const options = question.querySelectorAll('.option')
+    for (let option of options) {
+      if (option.checked) data[option.name] = option.value;
+    }
+    if (!data[question.id]) data[question.id] = null;
   }
   return data;
 };
@@ -42,8 +50,10 @@ function checkAnswer(choice, correctChoice, isAnswerOk) {
   if (isAnswerOk) {
     choice.classList.add('text-success');
   } else {
-    choice.classList.add('text-danger');
-    correctChoice.classList.add('text-success');
+    if (choice) {
+      choice.classList.add('text-danger');
+      correctChoice.classList.add('text-success');
+    }
   }
 }
 
@@ -80,7 +90,7 @@ form.addEventListener('submit', async (event) => {
   const quizCheck = await callEndPoint(url, data);
 
   checkQuestionsAfterSubmit(quizCheck.results);
-  showResult(quizCheck.avg);
+  showResult(quizCheck.score);
   submit.disabled = true;
   scrollTop();
 });
