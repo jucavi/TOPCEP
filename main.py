@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
 
 db = SQLAlchemy()
 
@@ -9,7 +8,6 @@ def create_app(env='develop'):
 
     app = Flask(__name__)
     app.config.from_object(config.get(env))
-    CORS(app)
 
     db.init_app(app)
 
@@ -18,7 +16,7 @@ def create_app(env='develop'):
         from auth import auth_bp
         from dashboard import dash_bp
 
-        db.create_all()
+        # db.create_all()
 
         app.register_blueprint(auth_bp)
         app.register_blueprint(dash_bp)

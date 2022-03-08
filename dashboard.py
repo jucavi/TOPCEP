@@ -1,10 +1,10 @@
 from configparser import SectionProxy
-from flask import Blueprint, render_template, make_response, request, g
+from flask import Blueprint, render_template, make_response, request
 from auth import current_user, login_required
 from main import db
 from random import shuffle
 from uuid import uuid4
-from models import Question, Quiz, QuizzesQuestions, Choice
+from models import Question, Quiz, QuizzesQuestions, Choice, User
 # from flask_cors import CORS
 
 
@@ -32,6 +32,22 @@ def quiz():
     res.set_cookie('id', current_user().id, secure=True)
     return res
 
+@dash_bp.route('/quizzes')
+@login_required
+def all_quizzes():
+    user = current_user()
+    return render_template('quizzes.html', user=user)
+
+@dash_bp.route('/quiz/<quiz_id>', methods=['GET', 'POST'])
+@login_required
+def quiz_grade(quiz_id):
+    user = current_user()
+    quiz = Quiz.query.get(quiz_id)
+    if quiz:
+        return render_template('quiz_grade.html', quiz=quiz, user=user, title='Quiz')
+    return quiz
+
+
 
 @dash_bp.route('/score', methods=['POST'])
 def score():
@@ -39,33 +55,34 @@ def score():
     count = 0
     form = request.get_json()
     cookies = request.cookies
-    print(form)
-    print(cookies)
+    _id = cookies.get('id', '')
 
-    # quiz = Quiz(id=uuid4().hex, user_id=cookies['id'])
+    user = User.query.get(_id)
+    if user:
+        quiz = Quiz(id=uuid4().hex, user_id=_id)
 
-    # for question_id, choice_id in form.items():
-    #     question = Question.query.get(question_id)
-    #     is_correct = question.answer == choice_id
-    #     result['results'].append({
-    #             'question': question_id,
-    #             'choice': choice_id,
-    #             'correct_choice': question.answer,
-    #             'is_correct': is_correct
-    #     })
-    #     if is_correct:
-    #         count += 1
+        for question_id, choice_id in form.items():
+            question = Question.query.get(question_id)
+            is_correct = question.answer == choice_id
+            result['results'].append({
+                    'question': question_id,
+                    'choice': choice_id,
+                    'correct_choice': question.answer,
+                    'is_correct': is_correct
+            })
+            if is_correct:
+                count += 1
 
-    #     qq = QuizzesQuestions(id=uuid4().hex, quizz_id=quiz.id, question_id=question_id, answer=choice_id)
-    #     db.session.add(qq)
+            qq = QuizzesQuestions(id=uuid4().hex, quizz_id=quiz.id, question_id=question_id, answer=choice_id)
+            db.session.add(qq)
 
 
-    # score = round(count / QUIZ_QUESTIONS * 100)
-    # result['score'] = score
+        score = round(count / QUIZ_QUESTIONS * 100)
+        result['score'] = score
 
-    # quiz.score = score
-    # db.session.add(quiz)
-    # db.session.commit()
+        quiz.score = score
+        db.session.add(quiz)
+        db.session.commit()
 
     return result
 
@@ -86,7 +103,6 @@ def make_shuffle(iter):
 
 def get_scores(user):
     quizzes = user.quizzes
-    print(user, quizzes)
     if not quizzes:
         return None
     return [quiz.score for quiz in quizzes]

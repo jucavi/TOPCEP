@@ -1,27 +1,22 @@
 const form = document.querySelector('#questions');
 const questions = document.querySelectorAll('.question');
-const url = 'http://127.0.0.1:5000/score';
+const url = 'http://localhost:5000/score';
 const submit = document.querySelector('#quiz-submit');
 
 async function callEndPoint(url, data) {
-  // try {
-    // axios.defaults.withCredentials = true;
-  //   console.log(document.cookie)
-  //   const response = await axios({
-  //     method: 'POST',
-  //     url: url,
-  //     data: data,
-  //     // withCredentials: true
-  //     headers: { 'cookie': 'id=1234;'}
-  //   });
-  //   return response.data;
-  // } catch (e) {
-  //   console.log(e)
-  //   console.log(`Unable to retrieve data from ${url}`);
-  // }
-    fetch(url, {
-      method: 'POST'
-  })
+  try {
+    axios.defaults.withCredentials = true;
+    const response = await axios({
+      method: 'POST',
+      url: url,
+      data: data,
+      withCredentials: true
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e)
+    console.log(`Unable to retrieve data from ${url}`);
+  }
 }
 
 const getData = () => {

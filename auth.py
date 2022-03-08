@@ -88,10 +88,9 @@ def login_required(func):
 
 
 def current_user():
-    cookies = request.cookies
-    if ('id' in session) or ('id' in cookies):
-        _id = session.get('id') or cookies.get('id')
+    if ('id' in session):
+        _id = session.get('id')
         user = User.query.get(_id)
-        if user and user.is_authenticated(token=cookies.get('token')):
+        if user:
             return user
     return User()

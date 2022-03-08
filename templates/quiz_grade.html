@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+{% include '_navbar.html' %}
+{% endblock %}
+
+
+{% block content %}
+<h1 class="text-center diasplay-1 my-5">Quiz</h1>
+<div class="container w-50">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Question</th>
+        <th scope="col">Answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for question in quiz.questions %}
+      <tr>
+        <td>{{ question }}</td>
+        <td>Not yet</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</form>
+
+<div class="pb-5"></div>
+{% endblock %}

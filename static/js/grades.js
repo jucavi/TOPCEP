@@ -1,4 +1,4 @@
-const stringGrades = document.querySelector('#gradesList').value;
+const stringGrades = document.querySelector('#scoresList').value;
 const grades = JSON.parse(stringGrades);
 
 // 100% DIV
