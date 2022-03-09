@@ -1,7 +1,53 @@
 const form = document.querySelector('#questions');
 const questions = document.querySelectorAll('.question');
-const url = 'http://localhost:5000/score';
+const url = `http://${window.location.host}/score`;
 const submit = document.querySelector('#quiz-submit');
+const quizTime = 10 * 60;
+const startQuiz = document.querySelector('#start-quiz');
+const startDiv = document.querySelector('#start');
+
+function getTimeRemaining(endTime) {
+  let seconds = Math.floor(endTime % 60);
+  let minutes = Math.floor((endTime / 60) % 60);
+
+  return [minutes, seconds];
+}
+
+function initClock() {
+  let endTime = quizTime;
+
+  const init = setInterval(() => {
+    const [min, sec] = getTimeRemaining(endTime);
+
+    startQuiz.innerText = `${min}m ${sec}s`;
+    endTime--;
+
+    if (endTime < 0) {
+      clearInterval(init);
+
+      startQuiz.classList.remove('start');
+      startQuiz.classList.add('end');
+
+      sendQuiz();
+    }
+  }, 1000);
+}
+
+// console.log(startQuiz)
+startQuiz.addEventListener('click', (event) => {
+  initClock();
+});
+
+window.addEventListener('scroll', (event) => {
+  const lastKnownScrollPosition = this.scrollY;
+  if (lastKnownScrollPosition >= 104) {
+    startDiv.style.position = 'fixed'
+    startDiv.style.margin = 'auto'
+  } else {
+    startDiv.style.position = '';
+  }
+  console.log(lastKnownScrollPosition)
+})
 
 async function callEndPoint(url, data) {
   try {
@@ -10,11 +56,11 @@ async function callEndPoint(url, data) {
       method: 'POST',
       url: url,
       data: data,
-      withCredentials: true
+      withCredentials: true,
     });
     return response.data;
   } catch (e) {
-    console.log(e)
+    console.log(e);
     console.log(`Unable to retrieve data from ${url}`);
   }
 }
@@ -22,7 +68,7 @@ async function callEndPoint(url, data) {
 const getData = () => {
   const data = {};
   for (let question of questions) {
-    const options = question.querySelectorAll('.option')
+    const options = question.querySelectorAll('.option');
     for (let option of options) {
       if (option.checked) data[option.name] = option.value;
     }
@@ -79,8 +125,12 @@ function checkQuestionsAfterSubmit(quizCheck) {
   });
 }
 
-form.addEventListener('submit', async (event) => {
+form.addEventListener('submit', (event) => {
   event.preventDefault();
+  sendQuiz();
+});
+
+async function sendQuiz() {
   const data = getData();
   const quizCheck = await callEndPoint(url, data);
 
@@ -88,4 +138,4 @@ form.addEventListener('submit', async (event) => {
   showResult(quizCheck.score);
   submit.disabled = true;
   scrollTop();
-});
+}

@@ -84,8 +84,6 @@ class QuizzesQuestions(db.Model):
     __tablename__= 'quizzesquestions'
 
     id = db.Column(db.String(32), primary_key=True)
-    quizz_id = db.Column(db.String(32), db.ForeignKey('user.id'), nullable=False)
+    quiz_id = db.Column(db.String(32), db.ForeignKey('user.id'), nullable=False)
     question_id = db.Column(db.String(32), db.ForeignKey('question.id'), nullable=False)
     answer = db.Column(db.String(32))
-
-

@@ -42,7 +42,19 @@ def all_quizzes():
 @login_required
 def quiz_grade(quiz_id):
     user = current_user()
-    quiz = Quiz.query.get(quiz_id)
+    quizzes_questions = QuizzesQuestions.query.filter_by(quiz_id=quiz_id).all()
+    quiz = []
+    for qq in quizzes_questions:
+        question = Question.query.get(qq.question_id)
+        answer = Choice.query.get(question.answer)
+        choice = Choice.query.get(qq.answer)
+        quiz.append({
+            'question': question.question,
+            'answer': answer.choice,
+            'choice': 'Empty' if not choice else choice.choice
+        })
+
+
     if quiz:
         return render_template('quiz_grade.html', quiz=quiz, user=user, title='Quiz')
     return quiz
@@ -73,7 +85,7 @@ def score():
             if is_correct:
                 count += 1
 
-            qq = QuizzesQuestions(id=uuid4().hex, quizz_id=quiz.id, question_id=question_id, answer=choice_id)
+            qq = QuizzesQuestions(id=uuid4().hex, quiz_id=quiz.id, question_id=question_id, answer=choice_id)
             db.session.add(qq)
 
 

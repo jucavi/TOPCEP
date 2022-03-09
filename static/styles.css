@@ -1,3 +1,15 @@
 body {
     background-color: #f0efeb;
 }
+
+.start {
+    background-color: #e9edc9;
+    color: #2d6a4f;
+    border: 1px solid #2d6a4f;
+}
+
+.end {
+    background-color: #ffccd5;
+    color: #c9184a;
+    border: 1px solid #c9184a;
+}

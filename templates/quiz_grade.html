@@ -13,13 +13,15 @@
       <tr>
         <th scope="col">Question</th>
         <th scope="col">Answer</th>
+        <th scope="col">Correct</th>
       </tr>
     </thead>
     <tbody>
-      {% for question in quiz.questions %}
+      {% for q in quiz %}
       <tr>
-        <td>{{ question }}</td>
-        <td>Not yet</td>
+        <td>{{ q.question }}</td>
+        <td>{{ q.choice }}</td>
+        <td>{{ q.answer }}</td>
       </tr>
       {% endfor %}
     </tbody>
