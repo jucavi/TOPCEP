@@ -38,16 +38,16 @@ startQuiz.addEventListener('click', (event) => {
   initClock();
 });
 
-window.addEventListener('scroll', (event) => {
-  const lastKnownScrollPosition = this.scrollY;
-  if (lastKnownScrollPosition >= 104) {
-    startDiv.style.position = 'fixed'
-    startDiv.style.margin = 'auto'
-  } else {
-    startDiv.style.position = '';
-  }
-  console.log(lastKnownScrollPosition)
-})
+// window.addEventListener('scroll', (event) => {
+//   const lastKnownScrollPosition = this.scrollY;
+//   if (lastKnownScrollPosition >= 104) {
+//     startDiv.style.position = 'fixed'
+//     startDiv.style.margin = 'auto'
+//   } else {
+//     startDiv.style.position = '';
+//   }
+//   console.log(lastKnownScrollPosition)
+// })
 
 async function callEndPoint(url, data) {
   try {
